@@ -1,6 +1,8 @@
 // globals
 PFont serifItalic;
 PFont serif;
+float angle = 45;
+float quadrantHeight = 0;
 
 // this runs once
 void setup() {
@@ -14,13 +16,48 @@ void setup() {
   // background colour
   background(0, 0, 100); // white
 
-  // origin at left side of screen
-  translate(width/5, height/2);
-
   // Height that various interface elements will be constructed against
-  float quadrantHeight = width/5;
+  quadrantHeight = width/5;
+
+  // Draw initial unit circle image
+  drawUnitCircle();
+}
+
+void draw() {
+}
+
+// Respond to key presses
+void keyPressed()
+{
+  if (key == CODED) {
+    if (keyCode == LEFT) {
+      angle++;
+    }
+    if (keyCode == RIGHT) {
+      angle--;
+    }
+  }
+  drawUnitCircle();
+  //println(angle); // DEBUG
+}
+
+// drawUnitCircle
+//
+// Purpose: Draws all elements of the unit circle, using the most recent angle measure.
+//
+// Parameters: none
+void drawUnitCircle() {
+
+  // White rectangle over entire canvas
+  noStroke();
+  fill(0, 0, 100);
+  rect(0, 0, width, height);
+
+  // origin for unit circle at left side of screen
+  translate(quadrantHeight, height/2);
 
   // Draw axes for unit circle
+  stroke(0);
   strokeWeight(2);
   line(-1*quadrantHeight, 0, quadrantHeight, 0); // x-axis
   line(0, -1*quadrantHeight, 0, quadrantHeight); // y-axis
@@ -54,10 +91,11 @@ void setup() {
   // Draw 45 degree reference triangle
   strokeWeight(4);
   fill(300);
-  float angle = 45;
   float x = cos(radians(angle)) * radius;
   float y = sin(radians(angle)) * radius;
+  noStroke();
   triangle(0, 0, x, 0, x, -1*y);
+  stroke(0);
   line(0, 0, x, 0);  // x
   stroke(240, 80, 90);
   line(x, 0, x, -1*y); // y
@@ -69,5 +107,7 @@ void setup() {
   ellipse(x, -1*y, quadrantHeight / 36, quadrantHeight / 36);
   textFont(serifItalic);
   fill(0, 0, 0);
-  text("P", x, -1*(y + quadrantHeight / 24));
+  float xLabel = cos(radians(angle)) * (radius + radius / 6);
+  float yLabel = sin(radians(angle)) * (radius + radius / 6);
+  text("P", xLabel, yLabel*-1);
 }
