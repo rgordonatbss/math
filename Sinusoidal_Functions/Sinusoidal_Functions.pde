@@ -1,9 +1,10 @@
-// globals
+// globals //<>// //<>//
 PFont serifItalic;
 PFont serif;
 PFont greek;
 float angle = 45;
 float quadrantHeight = 0;
+boolean[] anglesRequested = new boolean[541];
 
 // this runs once
 void setup() {
@@ -46,15 +47,20 @@ void keyPressed()
     }
   }
 
-  // Negative angles not permitted
+  // No negative angles
   if (angle < 0) {
     angle = 0;
+  }
+
+  // Draw ratio vs theta on sinusoidal axis for this value of theta
+  if (angle <= 540) {
+    anglesRequested[int(angle)] = true;
   }
 
   // Re-draw circle and sinusoidal  
   drawUnitCircle();
   drawSinusoidal();
-  println(angle); // DEBUG
+  //println(angle); // DEBUG
 }
 
 // drawUnitCircle
@@ -169,7 +175,6 @@ void drawSinusoidal() {
 
   // Scale for vertical axis
   float diameter = quadrantHeight*2 - quadrantHeight / 3 * 2;
-  //float radius = diameter / 2;
   // Positive one
   strokeWeight(2);
   stroke(0);
@@ -204,5 +209,18 @@ void drawSinusoidal() {
   text("360", quadrantHeight*2 - quadrantHeight / 14, quadrantHeight / 8);
   textFont(greek); 
   text(s, quadrantHeight*2 + quadrantHeight / 13, quadrantHeight / 8);
-  
+
+  // Plot ratio for any angle values that have been requested
+  float y2 = 0;
+  float x1 = 0;
+  float radius = diameter / 2;
+  stroke(240, 80, 90); // blue
+  strokeWeight(1);
+  for (int i = 0; i <= 540; i++) {
+    if (anglesRequested[i] == true) {
+      y2 = sin(radians(i)) * radius;
+      x1 = map(i, 0, 540, 0, quadrantHeight*3);
+      line(x1, 0, x1, y2*-1);
+    }
+  }
 }
