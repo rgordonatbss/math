@@ -25,8 +25,9 @@ void setup() {
   serifItalic = loadFont("Times-Italic-24.vlw");
   greek = loadFont("TimesNewRomanPS-ItalicMT-24.vlw");
 
-  // Draw initial unit circle image
+  // Draw initial images
   drawUnitCircle();
+  drawSinusoidal();
 }
 
 void draw() {
@@ -154,7 +155,7 @@ void drawSinusoidal() {
   stroke(0);
   strokeWeight(2);
   stroke(0, 80, 90); // red
-  line(-1*quadrantHeight/3, 0, quadrantHeight*2 + quadrantHeight / 16, 0); // x-axis
+  line(-1*quadrantHeight/3, 0, quadrantHeight*3, 0); // x-axis
   stroke(240, 80, 90); // blue
   line(0, -1*quadrantHeight, 0, quadrantHeight); // y-axis
 
@@ -162,11 +163,11 @@ void drawSinusoidal() {
   fill(0, 0, 0);
   textFont(greek);
   String s="\u03B8";        
-  text(s, quadrantHeight*2 + quadrantHeight / 16, -1 * quadrantHeight / 16);
+  text(s, quadrantHeight*2 + quadrantHeight / 8, -1 * quadrantHeight / 16);
   textFont(serifItalic);
   text("sine", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
 
-  // Scale
+  // Scale for vertical axis
   float diameter = quadrantHeight*2 - quadrantHeight / 3 * 2;
   //float radius = diameter / 2;
   // Positive one
@@ -177,11 +178,31 @@ void drawSinusoidal() {
   textFont(serif);
   text("1", -1 * quadrantHeight/12, (diameter/2 - quadrantHeight/36) * -1);
   // Negative one
-  strokeWeight(2);
-  stroke(0);
   line(-1 * quadrantHeight / 36, diameter/2, quadrantHeight / 36, diameter/2);
-  fill(0);
   textFont(serif);
   text("-1", -1 * quadrantHeight/8, (diameter/2 + quadrantHeight/28));
+
+  // Scale for horizontal axis
+  line(quadrantHeight/2, -1 * quadrantHeight / 36, quadrantHeight/2, 1 * quadrantHeight / 36);
+  textFont(serifItalic); 
+  text("90", quadrantHeight/2 - quadrantHeight / 20, quadrantHeight / 8);
+  s="\u00B0";
+  textFont(greek); 
+  text(s, quadrantHeight/2 + quadrantHeight / 20, quadrantHeight / 8);
+  line(quadrantHeight, -1 * quadrantHeight / 36, quadrantHeight, 1 * quadrantHeight / 36); 
+  textFont(serifItalic); 
+  text("180", quadrantHeight - quadrantHeight / 14, quadrantHeight / 8);
+  textFont(greek); 
+  text(s, quadrantHeight + quadrantHeight / 13, quadrantHeight / 8);
+  line(quadrantHeight/2*3, -1 * quadrantHeight / 36, quadrantHeight/2*3, 1 * quadrantHeight / 36); 
+  textFont(serifItalic); 
+  text("270", quadrantHeight/2*3 - quadrantHeight / 14, quadrantHeight / 8);
+  textFont(greek); 
+  text(s, quadrantHeight/2*3 + quadrantHeight / 13, quadrantHeight / 8);
+  line(quadrantHeight*2, -1 * quadrantHeight / 36, quadrantHeight*2, 1 * quadrantHeight / 36); 
+  textFont(serifItalic); 
+  text("360", quadrantHeight*2 - quadrantHeight / 14, quadrantHeight / 8);
+  textFont(greek); 
+  text(s, quadrantHeight*2 + quadrantHeight / 13, quadrantHeight / 8);
   
 }
