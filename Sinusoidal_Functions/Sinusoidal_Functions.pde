@@ -29,6 +29,7 @@ void draw() {
 // Respond to key presses
 void keyPressed()
 {
+  // Change angle based on keypresses
   if (key == CODED) {
     if (keyCode == LEFT) {
       angle++;
@@ -37,8 +38,15 @@ void keyPressed()
       angle--;
     }
   }
+  
+  // Negative angles not permitted
+  if (angle < 0) {
+    angle = 0;
+  }
+
+  // Re-draw circle  
   drawUnitCircle();
-  //println(angle); // DEBUG
+  println(angle); // DEBUG
 }
 
 // drawUnitCircle
@@ -55,7 +63,7 @@ void drawUnitCircle() {
 
   // origin for unit circle at left side of screen
   translate(quadrantHeight, height/2);
-
+  
   // Draw axes for unit circle
   stroke(0);
   strokeWeight(2);
@@ -110,4 +118,11 @@ void drawUnitCircle() {
   float xLabel = cos(radians(angle)) * (radius + radius / 6);
   float yLabel = sin(radians(angle)) * (radius + radius / 6);
   text("P", xLabel, yLabel*-1);
+  
+  // Draw theta
+  noFill();
+  strokeWeight(2);
+  stroke(0, 80, 90); // red
+  scale(1, -1);
+  arc(0, 0, radius/4, radius/4, radians(0), radians(angle));
 }
