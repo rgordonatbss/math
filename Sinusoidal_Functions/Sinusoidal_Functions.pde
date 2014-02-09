@@ -1,4 +1,4 @@
-// global variables and objects //<>//
+// globals //<>// //<>//
 PFont serifItalic;
 PFont serif;
 PFont greek;
@@ -6,20 +6,19 @@ float angle = 45;
 float quadrantHeight = 0;
 boolean[] anglesRequested = new boolean[541];
 
-// this function runs once
+// this runs once
 void setup() {
 
-  // canvas size
+  // canvas
   size(1200, 600);
 
-  // Use Hue-Saturation-Brightness colour model
+  // Use HSB colour model
   colorMode(HSB, 360, 100, 100, 100);
 
   // background colour
   background(0, 0, 100); // white
 
   // Height that various interface elements will be constructed against
-  // May need to change this if the canvas size is changed
   quadrantHeight = width/5;
 
   // Set fonts
@@ -32,11 +31,10 @@ void setup() {
   drawSinusoidal();
 }
 
-// This function iterates forever
 void draw() {
 }
 
-// This function responds to key presses
+// Respond to key presses
 void keyPressed()
 {
   // Change angle based on keypresses
@@ -54,7 +52,7 @@ void keyPressed()
     angle = 0;
   }
 
-  // For this value of theta on the unit circle, draw that ratio vs theta on sinusoidal axis 
+  // Draw ratio vs theta on sinusoidal axis for this value of theta
   if (angle <= 540) {
     anglesRequested[int(angle)] = true;
   }
@@ -77,10 +75,10 @@ void drawUnitCircle() {
   fill(0, 0, 100);
   rect(0, 0, width, height);
 
-  // Save regular translation settings
+  // save regular translation settings
   pushMatrix(); 
 
-  // Make origin for unit circle be at left side of screen
+  // origin for unit circle at left side of screen
   translate(quadrantHeight, height/2);
 
   // Draw axes for unit circle
@@ -95,7 +93,7 @@ void drawUnitCircle() {
   text("x", quadrantHeight - quadrantHeight / 16, -1 * quadrantHeight / 16);
   text("y", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
 
-  // Unit circle itself
+  // Unit circle
   noFill();
   float diameter = quadrantHeight*2 - quadrantHeight / 3 * 2;
   float radius = diameter / 2;
@@ -156,7 +154,7 @@ void drawUnitCircle() {
 // Parameters: none
 void drawSinusoidal() {
 
-  // Origin for unit circle at left side of screen
+  // origin for unit circle at left side of screen
   translate(quadrantHeight*270/100, height/2);
 
   // Draw axes for sinusoidal
@@ -212,7 +210,7 @@ void drawSinusoidal() {
   textFont(greek); 
   text(s, quadrantHeight*2 + quadrantHeight / 13, quadrantHeight / 8);
 
-  // Plot ratio vs. theta for any angle values that have been requested
+  // Plot ratio for any angle values that have been requested
   float y2 = 0;
   float x1 = 0;
   float radius = diameter / 2;
@@ -225,5 +223,4 @@ void drawSinusoidal() {
       line(x1, 0, x1, y2*-1);
     }
   }
-  
 }
