@@ -2,9 +2,12 @@
 PFont serifItalic;
 PFont serif;
 PFont greek;
-float angle = 45;
+float angle = 0;
+float initialAngle = 0;
 float quadrantHeight = 0;
 boolean[] anglesRequested = new boolean[541];
+boolean showSine = true;
+color red, green, blue, black, white;
 
 // this function runs once
 void setup() {
@@ -15,21 +18,28 @@ void setup() {
   // Use Hue-Saturation-Brightness colour model
   colorMode(HSB, 360, 100, 100, 100);
 
-  // background colour
-  background(0, 0, 100); // white
-
-  // Height that various interface elements will be constructed against
-  // May need to change this if the canvas size is changed
-  quadrantHeight = width/5;
-
   // Set fonts
   serif = loadFont("Times-Roman-24.vlw");
   serifItalic = loadFont("Times-Italic-24.vlw");
   greek = loadFont("TimesNewRomanPS-ItalicMT-24.vlw");
 
+  // Set frequently used colors
+  red = color(0, 80, 90);
+  green = color(122, 77, 67);
+  blue = color(240, 80, 90);
+  black = color(0, 0, 0);
+  white = color(0, 0, 100);
+
+  // background colour
+  background(white);
+
+  // Height that various interface elements will be constructed against
+  // May need to change this if the canvas size is changed
+  quadrantHeight = width/5;
+
   // Draw initial images
-  drawUnitCircle();
-  drawSinusoidal();
+  drawUnitCircle(showSine);
+  drawSinusoidal(showSine);
 }
 
 // This function iterates forever
@@ -54,27 +64,47 @@ void keyPressed()
     angle = 0;
   }
 
-  // For this value of theta on the unit circle, draw that ratio vs theta on sinusoidal axis 
-  if (angle <= 540) {
-    anglesRequested[int(angle)] = true;
+  // Flip between sine and cosine view
+  if (key == 's') {
+    showSine = true;
+    // reset unit circle and sinusoidal graph
+    angle = initialAngle;
+    for (int i = 0; i < anglesRequested.length; i++) {
+      anglesRequested[i] = false;
+    }
+  } 
+  else if (key == 'c') {
+    showSine = false;
+    // reset unit circle and sinusoidal graph
+    angle = initialAngle;
+    for (int i = 0; i < anglesRequested.length; i++) {
+      anglesRequested[i] = false;
+    }
+  } 
+  else {
+    // For this value of theta on the unit circle, draw that ratio vs theta on sinusoidal axis 
+    if (angle < anglesRequested.length) {
+      anglesRequested[int(angle)] = true;
+    }
   }
 
   // Re-draw circle and sinusoidal  
-  drawUnitCircle();
-  drawSinusoidal();
+  drawUnitCircle(showSine);
+  drawSinusoidal(showSine);
   //println(angle); // DEBUG
 }
+
 
 // drawUnitCircle
 //
 // Purpose: Draws all elements of the unit circle, using the most recent angle measure.
 //
-// Parameters: none
-void drawUnitCircle() {
+// Parameters:       sine          If true, sine ratio will be illustrated.  Otherwise, cosine ratio will be illustrated.
+void drawUnitCircle(boolean sine) {
 
   // White rectangle over entire canvas
   noStroke();
-  fill(0, 0, 100);
+  fill(white);
   rect(0, 0, width, height);
 
   // Save regular translation settings
@@ -84,14 +114,14 @@ void drawUnitCircle() {
   translate(quadrantHeight, height/2);
 
   // Draw axes for unit circle
-  stroke(0);
+  stroke(black);
   strokeWeight(2);
   line(-1*quadrantHeight, 0, quadrantHeight, 0); // x-axis
   line(0, -1*quadrantHeight, 0, quadrantHeight); // y-axis
 
   // Labels for unit circle
   textFont(serifItalic);
-  fill(0, 0, 0);
+  fill(black);
   text("x", quadrantHeight - quadrantHeight / 16, -1 * quadrantHeight / 16);
   text("y", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
 
@@ -102,7 +132,7 @@ void drawUnitCircle() {
   ellipse(0, 0, diameter, diameter);
 
   // Mark unit points
-  fill(0, 0, 0); // black
+  fill(black);
   textFont(serif);
   text("(1, 0)", diameter/2 + quadrantHeight / 24, quadrantHeight/8);
   ellipse(diameter/2, 0, quadrantHeight / 36, quadrantHeight / 36);
@@ -113,25 +143,38 @@ void drawUnitCircle() {
   text("(0, -1)", quadrantHeight/24, diameter/2 + quadrantHeight / 10);
   ellipse(0, diameter/2 * -1, quadrantHeight / 36, quadrantHeight / 36);
 
-  // Draw 45 degree reference triangle
+  // Draw reference triangle
   strokeWeight(4);
-  fill(300);
+  fill(300); // light grey
   float x = cos(radians(angle)) * radius;
   float y = sin(radians(angle)) * radius;
   noStroke();
   triangle(0, 0, x, 0, x, -1*y);
-  stroke(0);
-  line(0, 0, x, 0);  // x
-  stroke(240, 80, 90); // blue
-  line(x, 0, x, -1*y); // y
-  stroke(0);
-  line(0, 0, x, -1*y); // r
-  fill(0);
+  stroke(black);
+  // side r (radius of unit circle)
+  line(0, 0, x, -1*y);
+  // side x (base of reference triangle)
+  if (!sine) { 
+    stroke(green);
+  } 
+  else {
+    stroke(black);
+  }
+  line(0, 0, x, 0);
+  // side y (height of reference triangle)
+  if (sine) {
+    stroke(blue);
+  } 
+  else {
+    stroke(black);
+  }
+  line(x, 0, x, -1*y);
 
   // Draw point P on unit circle
+  stroke(black);
+  fill(black);
   ellipse(x, -1*y, quadrantHeight / 36, quadrantHeight / 36);
   textFont(serifItalic);
-  fill(0, 0, 0);
   float xLabel = cos(radians(angle)) * (radius + radius / 6);
   float yLabel = sin(radians(angle)) * (radius + radius / 6);
   text("P", xLabel, yLabel*-1);
@@ -139,7 +182,7 @@ void drawUnitCircle() {
   // Draw theta
   noFill();
   strokeWeight(2);
-  stroke(0, 80, 90); // red
+  stroke(red);
   pushMatrix();
   scale(1, -1);
   arc(0, 0, radius/4, radius/4, radians(0), radians(angle));
@@ -151,37 +194,47 @@ void drawUnitCircle() {
 
 // drawSinusoidal
 //
-// Purpose: Draws the matching sine curve based on what's happening in the unit circle
+// Purpose: Draws the matching curve based on what's happening in the unit circle
 //
-// Parameters: none
-void drawSinusoidal() {
+// Parameters:       sine          If true, sine curve will be illustrated.  Otherwise, cosine curve will be shown.
+void drawSinusoidal(boolean sine) {
 
   // Origin for unit circle at left side of screen
   translate(quadrantHeight*270/100, height/2);
 
   // Draw axes for sinusoidal
-  stroke(0);
+  stroke(black);
   strokeWeight(2);
-  stroke(0, 80, 90); // red
+  stroke(red);
   line(-1*quadrantHeight/3, 0, quadrantHeight*3, 0); // x-axis
-  stroke(240, 80, 90); // blue
+  if (sine) {
+    stroke(blue);
+  } 
+  else {
+    stroke(green);
+  }
   line(0, -1*quadrantHeight, 0, quadrantHeight); // y-axis
 
   // Labels for sinusoidal axes
-  fill(0, 0, 0);
+  fill(black);
   textFont(greek);
   String s="\u03B8";        
   text(s, quadrantHeight*2 + quadrantHeight / 8, -1 * quadrantHeight / 16);
   textFont(serifItalic);
-  text("sine", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
+  if (sine) {
+    text("sine", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
+  } 
+  else {
+    text("cosine", quadrantHeight / 16, -1 * quadrantHeight + quadrantHeight / 16);
+  }
 
   // Scale for vertical axis
   float diameter = quadrantHeight*2 - quadrantHeight / 3 * 2;
   // Positive one
   strokeWeight(2);
-  stroke(0);
+  stroke(black);
   line(-1 * quadrantHeight / 36, -1*diameter/2, quadrantHeight / 36, -1*diameter/2);
-  fill(0);
+  fill(black);
   textFont(serif);
   text("1", -1 * quadrantHeight/12, (diameter/2 - quadrantHeight/36) * -1);
   // Negative one
@@ -216,14 +269,23 @@ void drawSinusoidal() {
   float y2 = 0;
   float x1 = 0;
   float radius = diameter / 2;
-  stroke(240, 80, 90); // blue
   strokeWeight(1);
-  for (int i = 0; i <= 540; i++) {
+  if (sine) {
+    stroke(blue);
+  } 
+  else {
+    stroke(green);
+  }
+  for (int i = 0; i < anglesRequested.length; i++) {
     if (anglesRequested[i] == true) {
-      y2 = sin(radians(i)) * radius;
-      x1 = map(i, 0, 540, 0, quadrantHeight*3);
+      if (sine) {
+        y2 = sin(radians(i)) * radius;
+      } 
+      else {
+        y2 = cos(radians(i)) * radius;
+      }
+      x1 = map(i, 0, anglesRequested.length - 1, 0, quadrantHeight*3);
       line(x1, 0, x1, y2*-1);
     }
   }
-  
 }
