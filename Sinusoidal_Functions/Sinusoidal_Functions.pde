@@ -1,8 +1,8 @@
-// global variables and objects //<>// //<>//
+// global variables and objects //<>//
 PFont serifItalic;
 PFont serif;
 PFont greek;
-float initialAngle = 15;
+float initialAngle = 45;
 float angle = initialAngle;
 float quadrantHeight = 0;
 boolean[] anglesRequested = new boolean[541];
