@@ -2,7 +2,8 @@
 PFont serifItalic;
 PFont serif;
 PFont greek;
-float initialAngle = 45;
+PFont sansSerif;
+float initialAngle = 0;
 float angle = initialAngle;
 float quadrantHeight = 0;
 boolean[] anglesRequested = new boolean[541];
@@ -22,6 +23,7 @@ void setup() {
   serif = loadFont("Times-Roman-24.vlw");
   serifItalic = loadFont("Times-Italic-24.vlw");
   greek = loadFont("TimesNewRomanPS-ItalicMT-24.vlw");
+  sansSerif = loadFont("Calibri-24.vlw");
 
   // Set frequently used colors
   red = color(0, 80, 90);
@@ -38,6 +40,8 @@ void setup() {
   quadrantHeight = width/5;
 
   // Draw initial images
+  clearCanvas();
+  drawHelpText();
   drawUnitCircle(showSine);
   drawSinusoidal(showSine);
 }
@@ -88,7 +92,9 @@ void keyPressed()
     }
   }
 
-  // Re-draw circle and sinusoidal  
+  // Re-draw circle and sinusoidal
+  clearCanvas();
+  drawHelpText();
   drawUnitCircle(showSine);
   drawSinusoidal(showSine);
   //println(angle); // DEBUG
@@ -102,16 +108,11 @@ void keyPressed()
 // Parameters:       sine          If true, sine ratio will be illustrated.  Otherwise, cosine ratio will be illustrated.
 void drawUnitCircle(boolean sine) {
 
-  // White rectangle over entire canvas
-  noStroke();
-  fill(white);
-  rect(0, 0, width, height);
-
   // Save regular translation settings
   pushMatrix(); 
 
   // Make origin for unit circle be at left side of screen
-  translate(quadrantHeight, height/2);
+  translate(quadrantHeight, height/2 + height/20);
 
   // Draw axes for unit circle
   stroke(black);
@@ -200,7 +201,7 @@ void drawUnitCircle(boolean sine) {
 void drawSinusoidal(boolean sine) {
 
   // Origin for unit circle at left side of screen
-  translate(quadrantHeight*270/100, height/2);
+  translate(quadrantHeight*270/100, height/2 + height/20);
 
   // Draw axes for sinusoidal
   stroke(black);
@@ -288,4 +289,45 @@ void drawSinusoidal(boolean sine) {
       line(x1, 0, x1, y2*-1);
     }
   }
+}
+
+// drawHelpText
+//
+// Purpose: Draws the instructions on screen.
+//
+// Parameters:     (none)
+void drawHelpText() {
+
+  // Draw top of screen help text
+  
+  // Grey background
+  fill(57, 13, 99); // pale yellow
+  rect(0, 0, width, height/12);
+  
+  // Separating line
+  stroke(200);
+  strokeWeight(2);
+  line(0, height/12, width, height/12);
+  
+  // Help text
+  textFont(sansSerif);
+  fill(200);
+  String l = "\u2190";
+  String r = "\u2192";
+  text("Press " + l + " and " + r + " keys to move point P.   How does what you see on the left connect to what you see on the right?", width/85, height/18);
+
+}
+
+// clearCanvas
+//
+// Purpose: Clears everything from the screen.
+// 
+// Parameters: (none)
+void clearCanvas() {
+
+  // White rectangle over entire canvas
+  noStroke();
+  fill(white);
+  rect(0, 0, width, height);
+
 }
